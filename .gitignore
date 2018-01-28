@@ -1,0 +1,7 @@
+*.egg-info/
+__pycache__/
+.cache/
+
+netlist.json
+fuses.jed
+tt.v

@@ -1,0 +1,14 @@
+probe: arduino_mega
+outfile: basic_tt.csv
+device: /dev/ttyUSB0
+
+ios:
+    inputs:
+        - a: C0
+        - b: C1
+        - c: C2
+
+    outputs:
+        - x: A0
+        - y: A1
+        - z: A2
