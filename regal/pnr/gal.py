@@ -11,7 +11,8 @@ _logger.addHandler(logging.NullHandler())
 
 
 class Cell:
-    def __init__(self, outpad, inputs, depth=8):
+    def __init__(self, gal_mode, outpad, inputs, depth=8):
+        self.gal_mode = gal_mode
         self.outpad = outpad
         self.inputs = inputs
         self.depth = depth
@@ -20,7 +21,11 @@ class Cell:
         self.fuses_and_array = [1] * self.width * self.depth
         self.fuses_ptd = [1] * depth
         self.fuse_xor = 0
-        self.fuse_ac1 = 0
+
+        if self.gal_mode == "registered":
+            self.fuse_ac1 = 1
+        else:
+            self.fuse_ac1 = 0
 
         self.used = False
 
@@ -37,8 +42,8 @@ class Cell:
             raise PnrError("Pad {} cannot be assigned as input".format(inpad))
         _logger.debug("Position of netname %s: %d", netname, index_input)
 
-        for i in range(self.depth):
-            idx = i * self.width + (index_input * 2)
+        for i in range(self.depth - int(self.has_oe())):
+            idx = (i + int(self.has_oe())) * self.width + (index_input * 2)
             self.fuses_and_array[idx] = table[i * 2] ^ 1
             self.fuses_and_array[idx + 1] = table[i * 2 + 1] ^ 1
 
@@ -69,8 +74,34 @@ class Cell:
                                     self._get_input_table(sop, index))
 
     def invert(self):
-        _logger.info("Inverting output of macro cell {}".format(self.outpad))
+        _logger.info("Inverting output of macro cell %s", self.outpad)
         self.fuse_xor = 0
+
+    def set_registered(self, clock, pins):
+        _logger.info(
+            "Configure macro cell %s in registered mode (clock: %s)",
+            self.outpad, clock
+        )
+        if self.gal_mode != "registered":
+            raise PnrError(
+                "GAL_DFF can only be synthesized in registered mode"
+                " (current GAL mode: {})".format(self.gal_mode)
+            )
+
+        sysclk = None
+        for netname, pin in pins.items():
+            if pin == 1:
+                sysclk = netname
+
+        if clock != sysclk:
+            raise PnrError(
+                "{} is not mapped to a clock input "
+                "(currently mapped to {} signal)".format(clock, sysclk)
+            )
+        self.fuse_ac1 = 0
+
+    def has_oe(self):
+        return self.gal_mode == "registered" and self.fuse_ac1
 
     def configure(self, netlist, bit, pins):
         _logger.info("Configuring macro cell {}".format(self.outpad))
@@ -79,6 +110,12 @@ class Cell:
 
         if type(bit) is int:
             driver = netlist.get_driver(bit)
+
+            if driver["type"] == "GAL_DFF":
+                clock = netlist.get_netname(driver["connections"]["C"][0])
+                self.set_registered(clock, pins)
+                driver = netlist.get_driver(driver["connections"]["D"][0])
+
             if driver["type"] == "GAL_XOR":
                 self.invert()
                 driver = netlist.get_driver(driver["connections"]["A"][0])
@@ -103,14 +140,10 @@ class Gal:
         self.outpads = outpads
         self.mode = mode
 
-        self.cells = []
-        for outpad in outpads:
-            self.cells.append(Cell(outpad, self.inpads))
-
         self.fuses_signature = [0] * 64
         if mode == "registered":
             self.fuse_syn = 0
-            self.fuse_ac0 = 0
+            self.fuse_ac0 = 1
         elif mode == "complex":
             self.fuse_syn = 1
             self.fuse_ac0 = 1
@@ -119,6 +152,10 @@ class Gal:
             self.fuse_ac0 = 0
         else:
             raise ValueError("Invalid GAL mode: {}".format(mode))
+
+        self.cells = []
+        for outpad in outpads:
+            self.cells.append(Cell(mode, outpad, self.inpads))
 
         _logger.info("GAL%dV%d configured in %s mode",
                      len(inpads), len(outpads), mode)
@@ -157,9 +194,9 @@ class GalXXv8(Gal):
         for cell in self.cells:
             jedec.comment("Macro cell {} AND-Array".format(cell.outpad))
 
-            for line in range(0, cell.width * cell.depth, cell.width):
-                line = cell.fuses_and_array[line:line + cell.width]
-                if 0 in line:
+            for line_idx in range(0, cell.width * cell.depth, cell.width):
+                line = cell.fuses_and_array[line_idx:line_idx + cell.width]
+                if 0 in line or (cell.has_oe() and line_idx == 0):
                     offset = jedec.fuses(offset, line)
                 else:
                     offset += cell.width
@@ -204,6 +241,14 @@ class Gal16v8(GalXXv8):
                 4, 18, 5, 17,
                 6, 14, 7, 13,
                 8, 12, 9, 11
+            ]
+            outpads = [19, 18, 17, 16, 15, 14, 13, 12]
+        elif mode == "registered":
+            inpads = [
+                2, 19, 3, 18,
+                4, 17, 5, 16,
+                6, 15, 7, 14,
+                8, 13, 9, 12
             ]
             outpads = [19, 18, 17, 16, 15, 14, 13, 12]
 

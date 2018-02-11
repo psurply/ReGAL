@@ -1,0 +1,18 @@
+device: GAL16V8
+mode: registered
+pins:
+    Clk: 1
+    I0: 2
+    I1: 3
+    I2: 4
+    I3: 5
+    I4: 6
+    I5: 7
+    I6: 8
+    I7: 9
+
+    O0: 19
+    O1: 18
+    Clk2: 17
+    Clk4: 16
+    Clk8: 15

@@ -7,6 +7,7 @@ assign Y = A ^ 1;
 
 endmodule
 
+
 module GAL_SOP (
     input I0,
     input I1,
@@ -26,5 +27,17 @@ parameter TABLE = 0;
 
 \$sop #(.WIDTH (WIDTH), .DEPTH(DEPTH), .TABLE(TABLE))
 _sop (.A({I7, I6, I5, I4, I3, I2, I1, I0}), .Y(O));
+
+endmodule
+
+
+module GAL_DFF (
+    input C,
+    input D,
+
+    output reg Q
+);
+
+
 
 endmodule

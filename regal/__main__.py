@@ -61,6 +61,8 @@ def get_parser():
     )
     tt2v_parser.add_argument("infile")
     tt2v_parser.add_argument("outfile")
+    tt2v_parser.add_argument("--clk", default=None)
+    tt2v_parser.add_argument("--seq", nargs="+", default=[])
     tt2v_parser.set_defaults(action="tt2v")
 
     return parser
@@ -101,7 +103,7 @@ def main():
         if not (dump(args.config)):
             sys.exit(1)
     elif args.action == "tt2v":
-        if not (tt2v(args.infile, args.outfile)):
+        if not (tt2v(args.infile, args.outfile, clock=args.clk, seq=args.seq)):
             sys.exit(1)
     else:
         parser.print_help()

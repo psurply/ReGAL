@@ -3,6 +3,7 @@ import json
 import logging
 from quine_mccluskey.qm import QuineMcCluskey
 from multiprocessing import Pool
+from collections import defaultdict
 
 _logger = logging.getLogger("regal_dump")
 _logger.addHandler(logging.NullHandler())
@@ -31,8 +32,8 @@ def _simplify(expr):
     return _tt_simplified
 
 
-def tt2v(infile, outfile):
-    tt = {}
+def tt2v(infile, outfile, clock=None, seq=[]):
+    tt = defaultdict(list)
 
     with open(infile, "r") as f:
         ttreader = csv.reader(f)
@@ -42,14 +43,23 @@ def tt2v(infile, outfile):
             tt[output] = []
 
         output_base = len(inputs) + 1
+        _row = [0] * (len(inputs) + len(outputs) + 1)
+        if clock is not None:
+            clk_idx = inputs.index(clock)
+
         for row in ttreader:
             for output_idx, output_name in enumerate(outputs):
-                if int(row[output_base + output_idx]):
+                if output_name in seq and clock is not None:
+                    # Clock rising edge
+                    if int(row[clk_idx]) and not int(_row[clk_idx]) and \
+                        int(row[output_base + output_idx]):
+                        input_values = _row[output_base:]
+                        input_values = int("".join(input_values), 2)
+                        tt[output_name].append(input_values)
+                elif int(row[output_base + output_idx]):
                     input_values = int("".join(row[0:len(inputs)]), 2)
-                    if output_name not in tt.keys():
-                        tt[output_name] = []
                     tt[output_name].append(input_values)
-
+            _row = row
 
     with Pool() as p:
         tt_simplified = p.map(
@@ -63,12 +73,18 @@ def tt2v(infile, outfile):
         for input in inputs:
             ports.append("    input {}".format(input))
         for output in outputs:
-            ports.append("    output {}".format(output))
+            ports.append("    output {}{}".format(
+                "reg " if output in seq else "",
+                output
+            ))
         f.write(",\n".join(ports))
         f.write("\n);\n\n")
 
         for output, entries in zip(outputs, tt_simplified):
-            f.write("assign {} =\n".format(output))
+            if output in seq:
+                f.write("always @(posedge {})\n  {} <=\n".format(clock, output))
+            else:
+                f.write("assign {} =\n".format(output))
             if entries is None:
                 f.write("  0\n;\n\n")
                 continue
@@ -76,13 +92,21 @@ def tt2v(infile, outfile):
             sop = []
             for entry in sorted(entries):
                 line = []
-                entry = "0" * (len(inputs) - len(entry)) + entry
-                for i in range(len(inputs)):
+                if output in seq:
+                    input_size = len(outputs)
+                    input_names = outputs
+                else:
+                    input_size = len(inputs)
+                    input_names = inputs
+                entry = "0" * (input_size - len(entry)) + entry
+
+                for i in range(input_size):
                     c = entry[i]
                     if c != "-":
+                        input_name = input_names[i]
                         line.append("{}{}".format(
                             "" if c == "1" else "~",
-                            inputs[i]
+                            input_name
                         ))
                 if line != []:
                     sop.append("  ({})".format(" & ".join(line)))

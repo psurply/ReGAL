@@ -26,8 +26,11 @@ def synth(outfile, *infiles, **kwargs):
     map_file = pkg_resources.resource_filename("regal.synth", "gal_map.v")
     yosys_commands += [
         "extract -map {}".format(tri_file),
+        "opt",
         "techmap",
+        "opt",
         "abc -sop -P 8 -I 8",
+        "opt",
         "techmap -map {}".format(map_file),
         "opt",
         "clean"
