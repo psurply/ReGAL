@@ -64,6 +64,45 @@ one step:
 $ regal build -o basic.jed device.yaml basic.v
 ```
 
+It is also allowed to synthesize sequential designs if the device has been
+configured in registered mode in the place-and-route configuration file:
+
+```yaml
+device: GAL16V8
+mode: registered
+pins:
+    Clk: 1
+    A: 2
+    B: 3
+
+    X: 19
+    Clk2: 17
+```
+
+Due to the limitations of GAL devices, the design can only define sequential
+logic on the positive edge of the dedicated clock input (Pin 1 for GAL16V8):
+
+```verilog
+module top (
+    input Clk,
+    input A,
+    input B,
+
+    output X,
+    output reg Clk2
+);
+
+assign X = A ^ B;
+
+always @(posedge Clk)
+  Clk2 <= ~Clk2
+;
+
+endmodule
+```
+
+![Netlist](examples/reg/netlist.png)
+
 ### Supported devices
 
 - GAL16V8 (simple and registered mode)
