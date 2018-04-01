@@ -20,6 +20,16 @@ _samples_registered = [
     ("clk_mixed.v", "clk_mixed.jed"),
 ]
 
+_samples_complex = [
+    ("and.v", "andc.jed"),
+    ("nand.v", "nandc.jed"),
+    ("not.v", "notc.jed"),
+    ("or.v", "orc.jed"),
+    ("xor.v", "xorc.jed"),
+    ("v1.v", "v1c.jed"),
+    ("v0.v", "v0c.jed"),
+]
+
 
 @pytest.mark.parametrize("rtl,jedec", _samples_simple)
 def test_synth_simple(tmpdir, rtl, jedec):
@@ -41,6 +51,19 @@ def test_synth_registered(tmpdir, rtl, jedec):
 
     out = tmpdir.join("out.jed")
     cfg = os.path.join("tests", "samples", "device_reg.yaml")
+    regal.pnr(str(netlist), cfg, str(out))
+
+    with open(os.path.join("tests", "samples", jedec), "r") as f:
+        assert f.read() == out.read()
+
+
+@pytest.mark.parametrize("rtl,jedec", _samples_complex)
+def test_synth_complex(tmpdir, rtl, jedec):
+    netlist = tmpdir.join("netlist.json")
+    regal.synth(str(netlist), os.path.join("tests", "samples", rtl))
+
+    out = tmpdir.join("out.jed")
+    cfg = os.path.join("tests", "samples", "device_complex.yaml")
     regal.pnr(str(netlist), cfg, str(out))
 
     with open(os.path.join("tests", "samples", jedec), "r") as f:

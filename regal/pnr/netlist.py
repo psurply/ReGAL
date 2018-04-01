@@ -41,7 +41,7 @@ class Netlist:
                 return name
         raise PnrError("Cannot find netname for bit {}".format(bit))
 
-    def get_outputs(self, pins):
+    def get_ios(self, pins):
         for netname, pin in pins.items():
             try:
                 port = self.top["ports"][netname]
@@ -49,5 +49,4 @@ class Netlist:
                 _logger.warning("Port {} not assigned. Ignored".format(netname))
                 continue
 
-            if port["direction"] == "output":
-                yield netname, pin
+            yield netname, pin, port["direction"]

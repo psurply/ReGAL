@@ -29,7 +29,7 @@ def synth(outfile, *infiles, **kwargs):
         "opt",
         "techmap",
         "opt",
-        "abc -sop -P 8 -I 8",
+        "abc -sop -P 8 -I 16",
         "opt",
         "techmap -map {}".format(map_file),
         "opt",

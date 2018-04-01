@@ -22,7 +22,7 @@ class Cell:
         self.fuses_ptd = [1] * depth
         self.fuse_xor = 0
 
-        if self.gal_mode == "registered":
+        if self.gal_mode in ["registered", "complex"]:
             self.fuse_ac1 = 1
         else:
             self.fuse_ac1 = 0
@@ -51,6 +51,9 @@ class Cell:
         sop_table = sop["parameters"]["TABLE"]
         sop_depth = sop["parameters"]["DEPTH"]
         sop_width = sop["parameters"]["WIDTH"]
+
+        if isinstance(sop_table, str):
+            sop_table = int(sop_table, 2)
 
         table = []
         for i in range(index * 2, self.depth * sop_width * 2, sop_width * 2):
@@ -101,10 +104,11 @@ class Cell:
         self.fuse_ac1 = 0
 
     def has_oe(self):
-        return self.gal_mode == "registered" and self.fuse_ac1
+        return (self.gal_mode == "complex") or \
+            (self.gal_mode == "registered" and self.fuse_ac1)
 
     def configure(self, netlist, bit, pins):
-        _logger.info("Configuring macro cell {}".format(self.outpad))
+        _logger.info("Configuring macro cell %s", self.outpad)
 
         self.fuse_xor = 1
 
@@ -131,6 +135,11 @@ class Cell:
                 bit, self.outpad
             ))
 
+        self.used = True
+
+    def configure_as_input(self):
+        _logger.info("Configuring macro cell %s as input", self.outpad)
+        self.fuses_ptd[0] = 0
         self.used = True
 
 
@@ -167,13 +176,21 @@ class Gal:
         raise KeyError
 
     def pnr(self, netlist, pins):
-        for netname, pin in netlist.get_outputs(pins):
-            cell = self.get_cell(pin)
-            if cell.used:
-                raise PnrError("Cell {} is already used".format(pin))
+        for netname, pin, direction in netlist.get_ios(pins):
+            if direction == "output":
+                cell = self.get_cell(pin)
+                if cell.used:
+                    raise PnrError("Cell {} is already used".format(pin))
 
-            bit = netlist.get_bit(netname)
-            cell.configure(netlist, bit, pins)
+                bit = netlist.get_bit(netname)
+                cell.configure(netlist, bit, pins)
+            else:
+                try:
+                    cell = self.get_cell(pin)
+                except KeyError:
+                    pass
+                else:
+                    cell.configure_as_input()
 
 
 class GalXXv8(Gal):
@@ -249,6 +266,14 @@ class Gal16v8(GalXXv8):
                 4, 17, 5, 16,
                 6, 15, 7, 14,
                 8, 13, 9, 12
+            ]
+            outpads = [19, 18, 17, 16, 15, 14, 13, 12]
+        elif mode == "complex":
+            inpads = [
+                2,  1, 3, 18,
+                4, 17, 5, 16,
+                6, 15, 7, 14,
+                8, 13, 9, 11
             ]
             outpads = [19, 18, 17, 16, 15, 14, 13, 12]
 

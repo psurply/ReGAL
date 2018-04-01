@@ -23,7 +23,7 @@ parameter WIDTH = 0;
 parameter TABLE = 0;
 parameter DEPTH = 0;
 
-parameter GAL_SOP_WIDTH = 8;
+parameter GAL_SOP_WIDTH = 16;
 
 input [WIDTH-1:0] A;
 output Y;
@@ -35,8 +35,10 @@ assign I[WIDTH-1:0] = A;
 generate
     GAL_SOP #(.TABLE(TABLE), .WIDTH(WIDTH), .DEPTH(DEPTH))
     _TECHMAP_REPLACE_ (
-        .I0 (I[0]), .I1 (I[1]), .I2 (I[2]), .I3 (I[3]),
-        .I4 (I[4]), .I5 (I[5]), .I6 (I[6]), .I7 (I[7]),
+        .I0  (I[0]),  .I1   (I[1]),  .I2   (I[2]),  .I3  (I[3]),
+        .I4  (I[4]),  .I5   (I[5]),  .I6   (I[6]),  .I7  (I[7]),
+        .I8  (I[8]),  .I9   (I[9]),  .I10  (I[10]), .I11 (I[11]),
+        .I12 (I[12]), .I13  (I[13]), .I14  (I[14]), .I15 (I[15]),
         .O (Y)
     );
 endgenerate

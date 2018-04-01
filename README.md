@@ -105,7 +105,7 @@ endmodule
 
 ### Supported devices
 
-- GAL16V8 (simple and registered mode)
+- GAL16V8 (simple, complex and registered mode)
 - GAL20V8 (simple mode only)
 
 ## Reverse engineering locked PAL/GAL

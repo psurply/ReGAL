@@ -102,7 +102,7 @@ int main(void)
             output_mask = uart_recv();
             gpio_init(output_mask);
         }
- 
+
         if (cmd == 'r') {
             start = uart_recv();
             start = (start << 8) | uart_recv();
