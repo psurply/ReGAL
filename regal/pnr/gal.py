@@ -52,6 +52,14 @@ class Cell:
         sop_depth = sop["parameters"]["DEPTH"]
         sop_width = sop["parameters"]["WIDTH"]
 
+        if sop_depth > self.get_useable_depth():
+            raise PnrError(
+                "Pin {}: sum-of-product cannot fit in the macro-cell. "
+                "(Depth: {}, Max: {})".format(
+                    self.outpad, sop_depth, self.get_useable_depth()
+                )
+            )
+
         if isinstance(sop_table, str):
             sop_table = int(sop_table, 2)
 
@@ -106,6 +114,9 @@ class Cell:
     def has_oe(self):
         return (self.gal_mode == "complex") or \
             (self.gal_mode == "registered" and self.fuse_ac1)
+
+    def get_useable_depth(self):
+        return self.depth - int(self.has_oe())
 
     def configure(self, netlist, bit, pins):
         _logger.info("Configuring macro cell %s", self.outpad)
