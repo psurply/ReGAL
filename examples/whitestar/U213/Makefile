@@ -1,4 +1,4 @@
-EXAMPLES = basic.v
+EXAMPLES = U213.v
 SYNTH_CONFIG = device.yaml
 
 JED = $(EXAMPLES:.v=.jed)

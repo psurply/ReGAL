@@ -8,6 +8,6 @@ REGAL = regal
 all: $(JED)
 
 %.jed: %.v
-	$(REGAL) build -o $@ $(SYNTH_CONFIG) $<
+	$(REGAL) -v build -o $@ $(SYNTH_CONFIG) $<
 
 .PHONY: all
