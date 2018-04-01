@@ -1,0 +1,22 @@
+device: GAL16V8
+mode: simple
+pins:
+    UDS:    1
+    LDS:    2
+    AS:     3
+    A21:    4
+    A4:     5
+    A22:    6
+    RW:     7
+    A3:     8
+    DTACK:  9
+    NC:     11
+
+    RAMWHI: 12
+    RAMWLO: 13
+    ROMLO:  14
+    BOUT:   15
+    RAMEN:  16
+    VPA:    17
+    ROMHI:  18
+    BIN:    19
