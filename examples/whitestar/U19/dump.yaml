@@ -1,0 +1,26 @@
+probe: arduino_mega
+outfile: tt.csv
+device: /dev/ttyUSB0
+
+ios:
+    inputs:
+        - IN0:      C0
+        - PD7:      C1
+        - PD6:      C2
+        - PD5:      C3
+        - PD4:      C4
+        - PD3:      C5
+        - PD2:      C6
+        - PD1:      C7
+        - PD0:      L0
+        - SA1:      L1
+
+    outputs:
+        - SD15:     A0
+        - SD14:     A1
+        - SD13:     A2
+        - SD12:     A3
+        - SD11:     A4
+        - SD10:     A5
+        - SD9:      A6
+        - SD8:      A7

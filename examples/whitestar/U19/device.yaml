@@ -1,0 +1,22 @@
+device: GAL16V8
+mode: simple
+pins:
+    IN0:        1
+    PD7:        2
+    PD6:        3
+    PD5:        4
+    PD4:        5
+    PD3:        6
+    PD2:        7
+    PD1:        8
+    PD0:        9
+    SA1:        11
+
+    SD8:        12
+    SD9:        13
+    SD10:       14
+    SD11:       15
+    SD12:       16
+    SD13:       17
+    SD14:       18
+    SD15:       19

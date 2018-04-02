@@ -1,0 +1,28 @@
+probe: arduino_mega
+outfile: tt.csv
+device: /dev/ttyUSB0
+
+ios:
+    inputs:
+        - XA0:    L2
+        - A9:     L3
+        - A10:    L4
+
+        - A11:    C7
+        - A12:    L0
+        - A13:    C2
+        - A14:    C1
+        - A15:    C0
+
+        - E:      C3
+        - Q:      C4
+        - VMA:    C5
+        - RW:     C6
+        - MPIN:   L1
+
+    outputs:
+        - ROMCS:  A0
+        - RAMCS:  A1
+        - IOPORT: A2
+        - IOSTB:  A3
+        - SNDSTB: A4

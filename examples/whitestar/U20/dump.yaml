@@ -1,0 +1,26 @@
+probe: arduino_mega
+outfile: tt.csv
+device: /dev/ttyUSB0
+
+ios:
+    inputs:
+        - E:        C0
+        - BUF_FUL:  C1
+        - BRW:      C2
+        - BA15:     C3
+        - BA14:     C4
+        - BA13:     C5
+        - FIRQ:     C6
+        - BA1:      C7
+        - BA2:      L0
+        - BLD:      L1
+
+    outputs:
+        - BUSY:     A0
+        - OSTAT:    A1
+        - BROM:     A2
+        - BRAM:     A3
+        - BIN:      A4
+        - DSP0:     A5
+        - DSP1:     A6
+        - BD7:      A7

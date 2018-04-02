@@ -1,0 +1,22 @@
+device: GAL16V8
+mode: simple
+pins:
+    E:          1
+    BUF_FUL:    2
+    BRW:        3
+    BA15:       4
+    BA14:       5
+    BA13:       6
+    FIRQ:       7
+    BA1:        8
+    BA2:        9
+    BLD:        11
+
+    BD7:        12
+    DSP1:       13
+    DSP0:       14
+    BIN:        15
+    BRAM:       16
+    BROM:       17
+    OSTAT:      18
+    BUSY:       19
