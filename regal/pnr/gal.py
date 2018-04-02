@@ -136,6 +136,14 @@ class Cell:
                 driver = netlist.get_driver(driver["connections"]["A"][0])
 
             if driver["type"] == "GAL_SOP":
+                if driver["parameters"]["WIDTH"] == 1:
+                    upstream = driver["connections"]["I0"][0]
+                    if netlist.get_netname(upstream) not in pins.keys():
+                        _logger.info("Inverter SOP detected: %s", upstream)
+                        self.invert()
+                        driver = netlist.get_driver(upstream)
+
+            if driver["type"] == "GAL_SOP":
                 self.configure_and_array(netlist, driver, pins)
             else:
                 raise PnrError("Unknown cell type: {}".format(driver["type"]))
