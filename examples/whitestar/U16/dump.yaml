@@ -1,0 +1,26 @@
+probe: arduino_mega
+outfile: tt.csv
+device: /dev/ttyUSB0
+
+ios:
+    inputs:
+        - E:        C0
+        - BA15:     C1
+        - BA14:     C2
+        - BA13:     C3
+        - BA12:     C4
+        - XA0:      C5
+        - BWA:      C6
+        - BA1:      C7
+        - XA5:      L0
+        - Q:        L1
+
+    outputs:
+        - RAMWR:    A0
+        - RAMCS:    A1
+        - PORTIN:   A2
+        - CATCCS:   A3
+        - CORE:     A4
+        - BSE:      A5
+        - ROMCS:    A6
+        - ZA0:      A7

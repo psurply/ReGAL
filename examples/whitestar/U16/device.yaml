@@ -1,0 +1,22 @@
+device: GAL16V8
+mode: simple
+pins:
+    E:          1
+    BA15:       2
+    BA14:       3
+    BA13:       4
+    BA12:       5
+    XA0:        6
+    BWA:        7
+    BA1:        8
+    XA5:        9
+    Q:          11
+
+    ZA0:        12
+    ROMCS:      13
+    BSE:        14
+    CORE:       15
+    CATCCS:     16
+    PORTIN:     17
+    RAMCS:      18
+    RAMWR:      19
