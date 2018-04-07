@@ -1,0 +1,22 @@
+device: GAL16V8
+mode: complex
+pins:
+    A15:    1
+    A14:    2
+    A13:    3
+    E:      4
+    Q:      5
+    VMA:    6
+    RW:     7
+    A11:    8
+    A12:    9
+    MPIN:   11
+
+    IOSTB:  12
+    XA0:    13
+    SNDSTB: 14
+    A10:    15
+    A9:     16
+    IOPORT: 17
+    RAMCS:  18
+    ROMCS:  19
