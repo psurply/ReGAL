@@ -17,7 +17,7 @@ def pnr(netlist, cfgfile, outfile, top="top"):
     _logger.info("Starting Place-and-route")
 
     with open(cfgfile, "r") as f:
-        cfg = yaml.load(f)
+        cfg = yaml.safe_load(f)
 
     try:
         netlist = Netlist(netlist, top)
