@@ -12,11 +12,12 @@ setup(
     author_email="pierre.surply@lse.epita.fr",
     install_requires=[
         "pyserial",
-        "quine_mccluskey"
+        "quine_mccluskey",
+        "pyyaml"
     ],
     packages=find_packages(),
     package_data={
-        "regal.synth": "*.v"
+        "regal.synth": ["*.v"]
     },
     entry_points={
           "console_scripts": [
