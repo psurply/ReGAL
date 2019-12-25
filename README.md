@@ -1,5 +1,7 @@
 # ReGAL
 
+[![Build Status](https://travis-ci.com/psurply/ReGAL.svg?branch=master)](https://travis-ci.com/psurply/ReGAL)
+
 ReGAL is a set of scripts used to assist reverse engineering of old-school
 *Programmable Array Logic* devices.
 

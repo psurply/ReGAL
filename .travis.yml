@@ -1,0 +1,9 @@
+dist: bionic
+addons:
+    apt:
+        packages:
+            - yosys
+
+language: python
+install: pip install .
+script: pytest
