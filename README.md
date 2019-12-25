@@ -7,8 +7,8 @@ ReGAL is a set of scripts used to assist reverse engineering of old-school
 
 ## Synthesis / Place-and-route
 
-From verilog design, ReGAL can generate JEDEC files that can be used to program
-*Generic Array Logic* devices.
+From a verilog design, ReGAL can generate JEDEC files that can be used to
+program *Generic Array Logic* devices.
 
 The synthesis is assisted by Yosys while the place-and-route logic has been
 implemented from scratch (since trivial for this type of devices).
@@ -112,13 +112,13 @@ endmodule
 
 ## Reverse engineering locked PAL/GAL
 
-Another aspect of this project consists in facilitate the reproduction of
+Another aspect of this project consists in facilitating the reproduction of
 locked PAL devices.
 When the fuse map is not readable anymore using the standard programming
 method, one alternative consists in dumping the truth tables by probing the
 outputs of the device when applying all the possibles input combinations.
 
-Obliviously, this method is limited to devices implementing combinational
+Obviously, this method is limited to devices implementing combinational
 logic (PAL working in registered mode are out-of-scope for this
 proof-of-concept).
 
