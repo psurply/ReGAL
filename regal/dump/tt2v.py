@@ -26,9 +26,13 @@ def read_io_names(header):
 
 def _simplify(expr):
     name, entries = expr
-    qm = QuineMcCluskey()
-    _tt_simplified = qm.simplify(entries)
-    _logger.debug("%s = %s", name, _tt_simplified)
+    _logger.debug("Simplifying %s...", entries)
+    if entries == [0]:
+        _tt_simplified = "0"
+    else:
+        qm = QuineMcCluskey()
+        _tt_simplified = qm.simplify(entries)
+    _logger.debug("%s: %s", name, _tt_simplified)
     return _tt_simplified
 
 
